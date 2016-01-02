@@ -1,0 +1,72 @@
+Elm.Main = Elm.Main || {};
+Elm.Main.make = function (_elm) {
+   "use strict";
+   _elm.Main = _elm.Main || {};
+   if (_elm.Main.values) return _elm.Main.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Mouse = Elm.Mouse.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $Window = Elm.Window.make(_elm);
+   var _op = {};
+   var view = F2(function (_p0,state) {
+      var _p1 = _p0;
+      var player = state.player;
+      return A2($Html.div,
+      _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "width",_1: A2($Basics._op["++"],$Basics.toString(_p1._0),"px")}
+                                              ,{ctor: "_Tuple2",_0: "height",_1: A2($Basics._op["++"],$Basics.toString(_p1._1),"px")}
+                                              ,{ctor: "_Tuple2",_0: "background",_1: "#111"}]))]),
+      _U.list([A2($Html.img,
+              _U.list([$Html$Attributes.src("x.png")
+                      ,$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "position",_1: "absolute"}
+                                                      ,{ctor: "_Tuple2",_0: "margin-left",_1: "-128px"}
+                                                      ,{ctor: "_Tuple2",_0: "margin-top",_1: "-128px"}
+                                                      ,{ctor: "_Tuple2",_0: "left",_1: A2($Basics._op["++"],$Basics.toString(player.x),"px")}
+                                                      ,{ctor: "_Tuple2",_0: "top",_1: A2($Basics._op["++"],$Basics.toString(player.y),"px")}
+                                                      ,{ctor: "_Tuple2",_0: "cursor",_1: "none"}
+                                                      ,player.visible ? {ctor: "_Tuple2",_0: "display",_1: "block"} : {ctor: "_Tuple2"
+                                                                                                                      ,_0: "display"
+                                                                                                                      ,_1: "none"}]))]),
+              _U.list([]))
+              ,A2($Html.span,
+              _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "color",_1: "#fff"}]))]),
+              _U.list([$Html.text($Basics.toString(state))]))]));
+   });
+   var playerFire = F2(function (isDown,player) {    return _U.update(player,{fire: isDown});});
+   var playerPos = F2(function (_p2,player) {    var _p3 = _p2;return _U.update(player,{x: _p3._0,y: _p3._1,visible: true});});
+   var update = F2(function (uiEvents,state) {
+      var _p4 = uiEvents;
+      if (_p4.ctor === "MouseMove") {
+            return _U.update(state,{player: A2(playerPos,{ctor: "_Tuple2",_0: _p4._0._0,_1: _p4._0._1},state.player)});
+         } else {
+            return _U.update(state,{player: A2(playerFire,_p4._0,state.player)});
+         }
+   });
+   var MouseButton = function (a) {    return {ctor: "MouseButton",_0: a};};
+   var MouseMove = function (a) {    return {ctor: "MouseMove",_0: a};};
+   var uiEvents = A2($Signal.merge,A2($Signal.map,MouseMove,$Mouse.position),A2($Signal.map,MouseButton,$Mouse.isDown));
+   var initialState = {player: {x: 50,y: 50,fire: false,visible: false}};
+   var model = A3($Signal.foldp,update,initialState,uiEvents);
+   var main = A3($Signal.map2,view,$Window.dimensions,model);
+   var Player = F4(function (a,b,c,d) {    return {x: a,y: b,fire: c,visible: d};});
+   var State = function (a) {    return {player: a};};
+   return _elm.Main.values = {_op: _op
+                             ,State: State
+                             ,Player: Player
+                             ,initialState: initialState
+                             ,model: model
+                             ,MouseMove: MouseMove
+                             ,MouseButton: MouseButton
+                             ,uiEvents: uiEvents
+                             ,update: update
+                             ,playerPos: playerPos
+                             ,playerFire: playerFire
+                             ,view: view
+                             ,main: main};
+};
