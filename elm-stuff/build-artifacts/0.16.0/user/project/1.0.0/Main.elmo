@@ -13,6 +13,7 @@ Elm.Main.make = function (_elm) {
    $Mouse = Elm.Mouse.make(_elm),
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm),
+   $Time = Elm.Time.make(_elm),
    $Window = Elm.Window.make(_elm);
    var _op = {};
    var view = F2(function (_p0,state) {
@@ -22,13 +23,20 @@ Elm.Main.make = function (_elm) {
       _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "width",_1: A2($Basics._op["++"],$Basics.toString(_p1._0),"px")}
                                               ,{ctor: "_Tuple2",_0: "height",_1: A2($Basics._op["++"],$Basics.toString(_p1._1),"px")}
                                               ,{ctor: "_Tuple2",_0: "background",_1: "#111"}]))]),
-      _U.list([A2($Html.img,
-              _U.list([$Html$Attributes.src("x.png")
-                      ,$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "position",_1: "absolute"}
+      _U.list([A2($Html.div,
+              _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "position",_1: "absolute"}
                                                       ,{ctor: "_Tuple2",_0: "margin-left",_1: "-128px"}
                                                       ,{ctor: "_Tuple2",_0: "margin-top",_1: "-128px"}
                                                       ,{ctor: "_Tuple2",_0: "left",_1: A2($Basics._op["++"],$Basics.toString(player.x),"px")}
                                                       ,{ctor: "_Tuple2",_0: "top",_1: A2($Basics._op["++"],$Basics.toString(player.y),"px")}
+                                                      ,{ctor: "_Tuple2"
+                                                       ,_0: "background"
+                                                       ,_1: A2($Basics._op["++"],
+                                                       "url(player.png) no-repeat ",
+                                                       A2($Basics._op["++"],$Basics.toString(player.spriteX),"px 0px"))}
+                                                      ,{ctor: "_Tuple2",_0: "width",_1: "256px"}
+                                                      ,{ctor: "_Tuple2",_0: "height",_1: "256px"}
+                                                      ,{ctor: "_Tuple2",_0: "overflow",_1: "hidden"}
                                                       ,{ctor: "_Tuple2",_0: "cursor",_1: "none"}
                                                       ,player.visible ? {ctor: "_Tuple2",_0: "display",_1: "block"} : {ctor: "_Tuple2"
                                                                                                                       ,_0: "display"
@@ -38,35 +46,49 @@ Elm.Main.make = function (_elm) {
               _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "color",_1: "#fff"}]))]),
               _U.list([$Html.text($Basics.toString(state))]))]));
    });
-   var playerFire = F2(function (isDown,player) {    return _U.update(player,{fire: isDown});});
    var playerPos = F2(function (_p2,player) {    var _p3 = _p2;return _U.update(player,{x: _p3._0,y: _p3._1,visible: true});});
-   var update = F2(function (uiEvents,state) {
-      var _p4 = uiEvents;
-      if (_p4.ctor === "MouseMove") {
-            return _U.update(state,{player: A2(playerPos,{ctor: "_Tuple2",_0: _p4._0._0,_1: _p4._0._1},state.player)});
-         } else {
-            return _U.update(state,{player: A2(playerFire,_p4._0,state.player)});
-         }
-   });
+   var Frame = function (a) {    return {ctor: "Frame",_0: a};};
    var MouseButton = function (a) {    return {ctor: "MouseButton",_0: a};};
    var MouseMove = function (a) {    return {ctor: "MouseMove",_0: a};};
-   var uiEvents = A2($Signal.merge,A2($Signal.map,MouseMove,$Mouse.position),A2($Signal.map,MouseButton,$Mouse.isDown));
-   var initialState = {player: {x: 50,y: 50,fire: false,visible: false}};
+   var uiEvents = $Signal.mergeMany(_U.list([A2($Signal.map,MouseMove,$Mouse.position)
+                                            ,A2($Signal.map,MouseButton,$Mouse.isDown)
+                                            ,A2($Signal.map,Frame,$Time.fps(25))]));
+   var Player = F4(function (a,b,c,d) {    return {visible: a,x: b,y: c,spriteX: d};});
+   var State = function (a) {    return {player: a};};
+   var spriteXFrame = 256;
+   var spriteXStart = -12544;
+   var initialState = {player: {visible: false,x: 50,y: 50,spriteX: spriteXStart}};
+   var playerSpin = F2(function (isDown,player) {
+      return _U.update(player,{spriteX: _U.eq(player.spriteX,spriteXStart) && _U.eq(isDown,true) ? spriteXStart + spriteXFrame : player.spriteX});
+   });
+   var timeline = F2(function (delta,player) {
+      return _U.update(player,
+      {spriteX: _U.eq(player.spriteX,0) ? spriteXStart : _U.cmp(player.spriteX,spriteXStart) > 0 ? player.spriteX + spriteXFrame : player.spriteX});
+   });
+   var update = F2(function (uiEvents,state) {
+      var _p4 = uiEvents;
+      switch (_p4.ctor)
+      {case "MouseMove": return _U.update(state,{player: A2(playerPos,{ctor: "_Tuple2",_0: _p4._0._0,_1: _p4._0._1},state.player)});
+         case "MouseButton": return _U.update(state,{player: A2(playerSpin,_p4._0,state.player)});
+         default: return _U.update(state,{player: A2(timeline,_p4._0,state.player)});}
+   });
    var model = A3($Signal.foldp,update,initialState,uiEvents);
    var main = A3($Signal.map2,view,$Window.dimensions,model);
-   var Player = F4(function (a,b,c,d) {    return {x: a,y: b,fire: c,visible: d};});
-   var State = function (a) {    return {player: a};};
    return _elm.Main.values = {_op: _op
+                             ,spriteXStart: spriteXStart
+                             ,spriteXFrame: spriteXFrame
                              ,State: State
                              ,Player: Player
                              ,initialState: initialState
                              ,model: model
                              ,MouseMove: MouseMove
                              ,MouseButton: MouseButton
+                             ,Frame: Frame
                              ,uiEvents: uiEvents
                              ,update: update
                              ,playerPos: playerPos
-                             ,playerFire: playerFire
+                             ,playerSpin: playerSpin
+                             ,timeline: timeline
                              ,view: view
                              ,main: main};
 };
