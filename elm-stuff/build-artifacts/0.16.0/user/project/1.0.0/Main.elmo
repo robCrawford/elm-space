@@ -59,14 +59,16 @@ Elm.Main.make = function (_elm) {
               _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "position",_1: "absolute"}
                                                       ,{ctor: "_Tuple2",_0: "left",_1: "150px"}
                                                       ,{ctor: "_Tuple2",_0: "top",_1: "80%"}
-                                                      ,{ctor: "_Tuple2",_0: "background",_1: "#fff"}
-                                                      ,{ctor: "_Tuple2",_0: "margin-left",_1: "-40px"}
-                                                      ,{ctor: "_Tuple2",_0: "margin-top",_1: "-40px"}
-                                                      ,{ctor: "_Tuple2",_0: "width",_1: "80px"}
-                                                      ,{ctor: "_Tuple2",_0: "height",_1: "80px"}
+                                                      ,{ctor: "_Tuple2",_0: "margin-left",_1: "-30px"}
+                                                      ,{ctor: "_Tuple2",_0: "margin-top",_1: "-30px"}
+                                                      ,{ctor: "_Tuple2",_0: "width",_1: "60px"}
+                                                      ,{ctor: "_Tuple2",_0: "height",_1: "60px"}
+                                                      ,{ctor: "_Tuple2",_0: "line-height",_1: "80px"}
+                                                      ,{ctor: "_Tuple2",_0: "text-align",_1: "center"}
+                                                      ,{ctor: "_Tuple2",_0: "border",_1: "10px solid #fff"}
                                                       ,{ctor: "_Tuple2",_0: "border-radius",_1: "100px"}
-                                                      ,{ctor: "_Tuple2",_0: "opacity",_1: "0.5"}
-                                                      ,{ctor: "_Tuple2",_0: "z-index",_1: "10"}]))
+                                                      ,{ctor: "_Tuple2",_0: "z-index",_1: "10"}
+                                                      ,{ctor: "_Tuple2",_0: "cursor",_1: "move"}]))
                       ,A2($Html$Events.onClick,gameAction,PowerUp)]),
               _U.list([]))
               ,A2($Html.span,
@@ -82,7 +84,8 @@ Elm.Main.make = function (_elm) {
    var Player = F4(function (a,b,c,d) {    return {score: a,x: b,y: c,spriteX: d};});
    var State = function (a) {    return {player: a};};
    var spriteXFrame = 256;
-   var spriteXStart = -12544;
+   var spriteWidth = 12800;
+   var spriteXStart = spriteXFrame - spriteWidth;
    var initialState = {player: {score: 0,x: -1,y: -1,spriteX: spriteXStart}};
    var playerSpin = F2(function (isDown,player) {
       return _U.update(player,{spriteX: _U.eq(player.spriteX,spriteXStart) && _U.eq(isDown,true) ? spriteXStart + spriteXFrame : player.spriteX});
@@ -103,8 +106,9 @@ Elm.Main.make = function (_elm) {
    var model = A3($Signal.foldp,update,initialState,A2($Signal.merge,envAction,gameAction.signal));
    var main = A3($Signal.map2,view(gameAction.address),$Window.dimensions,model);
    return _elm.Main.values = {_op: _op
-                             ,spriteXStart: spriteXStart
+                             ,spriteWidth: spriteWidth
                              ,spriteXFrame: spriteXFrame
+                             ,spriteXStart: spriteXStart
                              ,State: State
                              ,Player: Player
                              ,initialState: initialState
@@ -115,12 +119,12 @@ Elm.Main.make = function (_elm) {
                              ,PowerUp: PowerUp
                              ,Noop: Noop
                              ,envAction: envAction
+                             ,gameAction: gameAction
                              ,update: update
                              ,playerScore: playerScore
                              ,playerPos: playerPos
                              ,playerSpin: playerSpin
                              ,timeline: timeline
-                             ,view: view
-                             ,gameAction: gameAction
-                             ,main: main};
+                             ,main: main
+                             ,view: view};
 };
