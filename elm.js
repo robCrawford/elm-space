@@ -10673,6 +10673,72 @@ Elm.Html.Attributes.make = function (_elm) {
                                         ,property: property
                                         ,attribute: attribute};
 };
+Elm.Html = Elm.Html || {};
+Elm.Html.Events = Elm.Html.Events || {};
+Elm.Html.Events.make = function (_elm) {
+   "use strict";
+   _elm.Html = _elm.Html || {};
+   _elm.Html.Events = _elm.Html.Events || {};
+   if (_elm.Html.Events.values) return _elm.Html.Events.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Json$Decode = Elm.Json.Decode.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $VirtualDom = Elm.VirtualDom.make(_elm);
+   var _op = {};
+   var keyCode = A2($Json$Decode._op[":="],"keyCode",$Json$Decode.$int);
+   var targetChecked = A2($Json$Decode.at,_U.list(["target","checked"]),$Json$Decode.bool);
+   var targetValue = A2($Json$Decode.at,_U.list(["target","value"]),$Json$Decode.string);
+   var defaultOptions = $VirtualDom.defaultOptions;
+   var Options = F2(function (a,b) {    return {stopPropagation: a,preventDefault: b};});
+   var onWithOptions = $VirtualDom.onWithOptions;
+   var on = $VirtualDom.on;
+   var messageOn = F3(function (name,addr,msg) {    return A3(on,name,$Json$Decode.value,function (_p0) {    return A2($Signal.message,addr,msg);});});
+   var onClick = messageOn("click");
+   var onDoubleClick = messageOn("dblclick");
+   var onMouseMove = messageOn("mousemove");
+   var onMouseDown = messageOn("mousedown");
+   var onMouseUp = messageOn("mouseup");
+   var onMouseEnter = messageOn("mouseenter");
+   var onMouseLeave = messageOn("mouseleave");
+   var onMouseOver = messageOn("mouseover");
+   var onMouseOut = messageOn("mouseout");
+   var onBlur = messageOn("blur");
+   var onFocus = messageOn("focus");
+   var onSubmit = messageOn("submit");
+   var onKey = F3(function (name,addr,handler) {    return A3(on,name,keyCode,function (code) {    return A2($Signal.message,addr,handler(code));});});
+   var onKeyUp = onKey("keyup");
+   var onKeyDown = onKey("keydown");
+   var onKeyPress = onKey("keypress");
+   return _elm.Html.Events.values = {_op: _op
+                                    ,onBlur: onBlur
+                                    ,onFocus: onFocus
+                                    ,onSubmit: onSubmit
+                                    ,onKeyUp: onKeyUp
+                                    ,onKeyDown: onKeyDown
+                                    ,onKeyPress: onKeyPress
+                                    ,onClick: onClick
+                                    ,onDoubleClick: onDoubleClick
+                                    ,onMouseMove: onMouseMove
+                                    ,onMouseDown: onMouseDown
+                                    ,onMouseUp: onMouseUp
+                                    ,onMouseEnter: onMouseEnter
+                                    ,onMouseLeave: onMouseLeave
+                                    ,onMouseOver: onMouseOver
+                                    ,onMouseOut: onMouseOut
+                                    ,on: on
+                                    ,onWithOptions: onWithOptions
+                                    ,defaultOptions: defaultOptions
+                                    ,targetValue: targetValue
+                                    ,targetChecked: targetChecked
+                                    ,keyCode: keyCode
+                                    ,Options: Options};
+};
 Elm.Main = Elm.Main || {};
 Elm.Main.make = function (_elm) {
    "use strict";
@@ -10683,6 +10749,7 @@ Elm.Main.make = function (_elm) {
    $Debug = Elm.Debug.make(_elm),
    $Html = Elm.Html.make(_elm),
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $Html$Events = Elm.Html.Events.make(_elm),
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Mouse = Elm.Mouse.make(_elm),
@@ -10691,19 +10758,33 @@ Elm.Main.make = function (_elm) {
    $Time = Elm.Time.make(_elm),
    $Window = Elm.Window.make(_elm);
    var _op = {};
-   var view = F2(function (_p0,state) {
-      var _p1 = _p0;
+   var playerPos = F2(function (_p0,player) {    var _p1 = _p0;return _U.update(player,{x: _p1._0,y: _p1._1});});
+   var playerScore = F2(function (n,player) {    return _U.update(player,{score: player.score + n});});
+   var Noop = {ctor: "Noop"};
+   var gameAction = $Signal.mailbox(Noop);
+   var PowerUp = {ctor: "PowerUp"};
+   var view = F3(function (gameAction,_p2,state) {
+      var _p3 = _p2;
       var player = state.player;
       return A2($Html.div,
-      _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "width",_1: A2($Basics._op["++"],$Basics.toString(_p1._0),"px")}
-                                              ,{ctor: "_Tuple2",_0: "height",_1: A2($Basics._op["++"],$Basics.toString(_p1._1),"px")}
-                                              ,{ctor: "_Tuple2",_0: "background",_1: "#111"}]))]),
+      _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "width",_1: A2($Basics._op["++"],$Basics.toString(_p3._0),"px")}
+                                              ,{ctor: "_Tuple2",_0: "height",_1: A2($Basics._op["++"],$Basics.toString(_p3._1),"px")}
+                                              ,{ctor: "_Tuple2",_0: "background",_1: "#111"}
+                                              ,{ctor: "_Tuple2",_0: "overflow",_1: "hidden"}]))]),
       _U.list([A2($Html.div,
               _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "position",_1: "absolute"}
                                                       ,{ctor: "_Tuple2",_0: "margin-left",_1: "-128px"}
                                                       ,{ctor: "_Tuple2",_0: "margin-top",_1: "-128px"}
-                                                      ,{ctor: "_Tuple2",_0: "left",_1: A2($Basics._op["++"],$Basics.toString(player.x),"px")}
-                                                      ,{ctor: "_Tuple2",_0: "top",_1: A2($Basics._op["++"],$Basics.toString(player.y),"px")}
+                                                      ,_U.cmp(player.x,-1) > 0 ? {ctor: "_Tuple2"
+                                                                                 ,_0: "left"
+                                                                                 ,_1: A2($Basics._op["++"],$Basics.toString(player.x),"px")} : {ctor: "_Tuple2"
+                                                                                                                                               ,_0: "left"
+                                                                                                                                               ,_1: "50%"}
+                                                      ,_U.cmp(player.y,-1) > 0 ? {ctor: "_Tuple2"
+                                                                                 ,_0: "top"
+                                                                                 ,_1: A2($Basics._op["++"],$Basics.toString(player.y),"px")} : {ctor: "_Tuple2"
+                                                                                                                                               ,_0: "top"
+                                                                                                                                               ,_1: "80%"}
                                                       ,{ctor: "_Tuple2"
                                                        ,_0: "background"
                                                        ,_1: A2($Basics._op["++"],
@@ -10712,27 +10793,38 @@ Elm.Main.make = function (_elm) {
                                                       ,{ctor: "_Tuple2",_0: "width",_1: "256px"}
                                                       ,{ctor: "_Tuple2",_0: "height",_1: "256px"}
                                                       ,{ctor: "_Tuple2",_0: "overflow",_1: "hidden"}
-                                                      ,{ctor: "_Tuple2",_0: "cursor",_1: "none"}
-                                                      ,player.visible ? {ctor: "_Tuple2",_0: "display",_1: "block"} : {ctor: "_Tuple2"
-                                                                                                                      ,_0: "display"
-                                                                                                                      ,_1: "none"}]))]),
+                                                      ,{ctor: "_Tuple2",_0: "z-index",_1: "1"}
+                                                      ,{ctor: "_Tuple2",_0: "cursor",_1: "none"}]))]),
+              _U.list([]))
+              ,A2($Html.div,
+              _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "position",_1: "absolute"}
+                                                      ,{ctor: "_Tuple2",_0: "left",_1: "150px"}
+                                                      ,{ctor: "_Tuple2",_0: "top",_1: "80%"}
+                                                      ,{ctor: "_Tuple2",_0: "background",_1: "#fff"}
+                                                      ,{ctor: "_Tuple2",_0: "margin-left",_1: "-40px"}
+                                                      ,{ctor: "_Tuple2",_0: "margin-top",_1: "-40px"}
+                                                      ,{ctor: "_Tuple2",_0: "width",_1: "80px"}
+                                                      ,{ctor: "_Tuple2",_0: "height",_1: "80px"}
+                                                      ,{ctor: "_Tuple2",_0: "border-radius",_1: "100px"}
+                                                      ,{ctor: "_Tuple2",_0: "opacity",_1: "0.5"}
+                                                      ,{ctor: "_Tuple2",_0: "z-index",_1: "10"}]))
+                      ,A2($Html$Events.onClick,gameAction,PowerUp)]),
               _U.list([]))
               ,A2($Html.span,
               _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "color",_1: "#fff"}]))]),
               _U.list([$Html.text($Basics.toString(state))]))]));
    });
-   var playerPos = F2(function (_p2,player) {    var _p3 = _p2;return _U.update(player,{x: _p3._0,y: _p3._1,visible: true});});
    var Frame = function (a) {    return {ctor: "Frame",_0: a};};
    var MouseButton = function (a) {    return {ctor: "MouseButton",_0: a};};
    var MouseMove = function (a) {    return {ctor: "MouseMove",_0: a};};
-   var uiEvents = $Signal.mergeMany(_U.list([A2($Signal.map,MouseMove,$Mouse.position)
-                                            ,A2($Signal.map,MouseButton,$Mouse.isDown)
-                                            ,A2($Signal.map,Frame,$Time.fps(25))]));
-   var Player = F4(function (a,b,c,d) {    return {visible: a,x: b,y: c,spriteX: d};});
+   var envAction = $Signal.mergeMany(_U.list([A2($Signal.map,MouseMove,$Mouse.position)
+                                             ,A2($Signal.map,MouseButton,$Mouse.isDown)
+                                             ,A2($Signal.map,Frame,$Time.fps(25))]));
+   var Player = F4(function (a,b,c,d) {    return {score: a,x: b,y: c,spriteX: d};});
    var State = function (a) {    return {player: a};};
    var spriteXFrame = 256;
    var spriteXStart = -12544;
-   var initialState = {player: {visible: false,x: 50,y: 50,spriteX: spriteXStart}};
+   var initialState = {player: {score: 0,x: -1,y: -1,spriteX: spriteXStart}};
    var playerSpin = F2(function (isDown,player) {
       return _U.update(player,{spriteX: _U.eq(player.spriteX,spriteXStart) && _U.eq(isDown,true) ? spriteXStart + spriteXFrame : player.spriteX});
    });
@@ -10740,15 +10832,17 @@ Elm.Main.make = function (_elm) {
       return _U.update(player,
       {spriteX: _U.eq(player.spriteX,0) ? spriteXStart : _U.cmp(player.spriteX,spriteXStart) > 0 ? player.spriteX + spriteXFrame : player.spriteX});
    });
-   var update = F2(function (uiEvents,state) {
-      var _p4 = uiEvents;
+   var update = F2(function (action,state) {
+      var _p4 = action;
       switch (_p4.ctor)
       {case "MouseMove": return _U.update(state,{player: A2(playerPos,{ctor: "_Tuple2",_0: _p4._0._0,_1: _p4._0._1},state.player)});
-         case "MouseButton": return _U.update(state,{player: A2(playerSpin,_p4._0,state.player)});
-         default: return _U.update(state,{player: A2(timeline,_p4._0,state.player)});}
+         case "MouseButton": return _U.update(state,{player: A2(playerScore,1,state.player)});
+         case "Frame": return _U.update(state,{player: A2(timeline,_p4._0,state.player)});
+         case "PowerUp": return _U.update(state,{player: A2(playerSpin,true,state.player)});
+         default: return state;}
    });
-   var model = A3($Signal.foldp,update,initialState,uiEvents);
-   var main = A3($Signal.map2,view,$Window.dimensions,model);
+   var model = A3($Signal.foldp,update,initialState,A2($Signal.merge,envAction,gameAction.signal));
+   var main = A3($Signal.map2,view(gameAction.address),$Window.dimensions,model);
    return _elm.Main.values = {_op: _op
                              ,spriteXStart: spriteXStart
                              ,spriteXFrame: spriteXFrame
@@ -10759,11 +10853,15 @@ Elm.Main.make = function (_elm) {
                              ,MouseMove: MouseMove
                              ,MouseButton: MouseButton
                              ,Frame: Frame
-                             ,uiEvents: uiEvents
+                             ,PowerUp: PowerUp
+                             ,Noop: Noop
+                             ,envAction: envAction
                              ,update: update
+                             ,playerScore: playerScore
                              ,playerPos: playerPos
                              ,playerSpin: playerSpin
                              ,timeline: timeline
                              ,view: view
+                             ,gameAction: gameAction
                              ,main: main};
 };

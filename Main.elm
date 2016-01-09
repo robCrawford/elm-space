@@ -1,9 +1,11 @@
 import Mouse
 import Window
 import Keyboard
+import Signal exposing(..)
 import Time exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing(..)
 
 
 -- MODEL
@@ -15,7 +17,7 @@ type alias State = {
   }
 
 type alias Player = {
-    visible: Bool,
+    score: Int,
     x: Int,
     y: Int,
     spriteX: Int
@@ -24,49 +26,59 @@ type alias Player = {
 initialState: State
 initialState = {
     player = {
-      visible = False,
-      x = 50,
-      y = 50,
+      score = 0,
+      x = -1,
+      y = -1,
       spriteX = spriteXStart
     }
   }
 
 model: Signal State
 model =
-  Signal.foldp update initialState uiEvents
+  Signal.foldp update initialState (Signal.merge envAction gameAction.signal)
 
 
 -- UPDATE
-type UIEvents = MouseMove (Int, Int)
+type Action = MouseMove (Int, Int)
   | MouseButton Bool
   | Frame Float
+  | PowerUp
+  | Noop
 
-uiEvents: Signal UIEvents
-uiEvents = Signal.mergeMany [
+envAction: Signal Action
+envAction = Signal.mergeMany [
     Signal.map MouseMove Mouse.position,
     Signal.map MouseButton Mouse.isDown,
     Signal.map Frame (fps 25)
   ]
 
-update: UIEvents -> State -> State
-update uiEvents state =
-  case uiEvents of
+update: Action -> State -> State
+update action state =
+  case action of
     MouseMove (x, y) ->
       { state | player = playerPos (x, y) state.player }
     MouseButton isDown ->
-      { state | player = playerSpin isDown state.player }
+      { state | player = playerScore 1 state.player }
     Frame delta ->
       { state | player = timeline delta state.player }
+    PowerUp ->
+      { state | player = playerSpin True state.player }
+    Noop ->
+      state
+
+playerScore: Int -> Player -> Player
+playerScore n player =
+  { player | score = player.score + n }
 
 playerPos: (Int, Int) -> Player -> Player
-playerPos (x, y) player = 
-  { player | x = x, y = y, visible = True }
+playerPos (x, y) player =
+  { player | x = x, y = y }
 
 playerSpin: Bool -> Player -> Player
 playerSpin isDown player =
     { player |
-        spriteX = 
-          if player.spriteX == spriteXStart && isDown == True then 
+        spriteX =
+          if player.spriteX == spriteXStart && isDown == True then
             spriteXStart + spriteXFrame
           else player.spriteX
     }
@@ -74,18 +86,18 @@ playerSpin isDown player =
 timeline: Float -> Player -> Player
 timeline delta player =
     { player |
-        spriteX = 
-          if player.spriteX == 0 then 
+        spriteX =
+          if player.spriteX == 0 then
             spriteXStart
-          else if player.spriteX > spriteXStart then 
+          else if player.spriteX > spriteXStart then
             player.spriteX + spriteXFrame
           else player.spriteX
     }
 
-  
+
 -- VIEW
-view: (Int, Int) -> State -> Html 
-view (winW, winH) state =
+view: Address Action -> (Int, Int) -> State -> Html
+view gameAction (winW, winH) state =
   let player = state.player
   in
     div [
@@ -93,32 +105,57 @@ view (winW, winH) state =
         [ ("width", (toString winW) ++ "px")
         , ("height", (toString winH) ++ "px")
         , ("background", "#111")
+        , ("overflow", "hidden")
         ]
-    ] [ 
+    ] [
       div [
         style
           [ ("position", "absolute")
           , ("margin-left", "-128px")
           , ("margin-top", "-128px")
-          , ("left", toString player.x ++ "px")
-          , ("top", toString player.y ++ "px")
+          , (if player.x > -1 then ("left", toString player.x ++ "px") else ("left", "50%"))
+          , (if player.y > -1 then ("top", toString player.y ++ "px") else ("top", "80%"))
           , ("background", "url(player.png) no-repeat " ++ (toString player.spriteX) ++ "px 0px")
           , ("width", "256px")
           , ("height", "256px")
           , ("overflow", "hidden")
+          , ("z-index", "1")
           , ("cursor", "none")
-          , (if player.visible then ("display", "block") else ("display", "none"))
           ]
+      ] [
+      ]
+    , div [
+        style
+          [ ("position", "absolute")
+          , ("left", "150px")
+          , ("top", "80%")
+          , ("background", "#fff")
+          , ("margin-left", "-40px")
+          , ("margin-top", "-40px")
+          , ("width", "80px")
+          , ("height", "80px")
+          , ("border-radius", "100px")
+          , ("opacity", "0.5")
+          , ("z-index", "10")
+          ]
+          , onClick gameAction PowerUp
       ] [
       ]
       , span [
           style
             [ ("color", "#fff") ]
-      ] [ 
+      ] [
         text (
           toString state
         )
       ]
     ]
 
-main = Signal.map2 view Window.dimensions model
+
+-- WIRING
+gameAction: Mailbox Action
+gameAction =
+  Signal.mailbox Noop
+
+main =
+  Signal.map2 (view gameAction.address) Window.dimensions model
