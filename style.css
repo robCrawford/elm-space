@@ -1,0 +1,42 @@
+.main {
+    background: #111;
+    border: 1px solid #66f;
+    overflow: hidden;
+}
+.player {
+    position: absolute;
+    margin-left: -128px;
+    margin-top: -128px;
+    border-radius: 1000px;
+    width: 256px;
+    height: 256px;
+    overflow: hidden;
+    z-index: 1;
+    cursor: none;
+    background: no-repeat url(player.png);
+}
+.orb {
+    position: absolute;
+    margin-left: -30px;
+    margin-top: -30px;
+    line-height: 80px;
+    text-align: center;
+    border: 1px solid #fff;
+    border-radius: 100px;
+    z-index: 10;
+    box-shadow: 0px 0px 8px 3px #fff, inset 0px 0px 8px 3px #fff;
+    cursor: move;
+}
+.score {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 10px;
+    font: 25px monospace;
+    text-align: center;
+    color: #fff;
+    z-index: 0;
+}
+.debug {
+    color: #fff;
+}

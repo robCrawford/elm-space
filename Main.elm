@@ -148,6 +148,13 @@ main =
 
 
 -- VIEW
+css : String -> Html
+css path =
+    node "link" [
+        rel "stylesheet",
+        href path
+    ] []
+
 view: Address Action -> (Int, Int) -> State -> Html
 view gameAction (winW, winH) state =
     let
@@ -156,75 +163,57 @@ view gameAction (winW, winH) state =
         level = player.score // 100
 
     in div [
+            class "main",
             style [
                 ("width", (toString (winW-2)) ++ "px"),
-                ("height", (toString (winH-2)) ++ "px"),
-                ("background", "#111"),
-                ("border", "1px solid #66f"),
-                ("overflow", "hidden")
+                ("height", (toString (winH-2)) ++ "px")
             ]
         ] [
+            -- STYLESHEET
+            css "style.css",
             -- PLAYER
             div [
+                class "player",
                 style [
-                    ("position", "absolute"),
-                    ("margin-left", "-128px"),
-                    ("margin-top", "-128px"),
-                    (if player.x > -1 then ("left", toString player.x ++ "px") else ("left", "50%")),
-                    (if player.y > -1 then ("top", toString player.y ++ "px") else ("top", "80%")),
-                    ("background", "url(player.png) no-repeat " ++ (toString player.spriteX) ++ "px 0px"),
-                    ("border-radius", "1000px"),
-                    (if player.highlightFrames > 0 then ("box-shadow", "inset 0px 0px 60px 10px rgba(255, 255, 255, 0.8)") else ("box-shadow", "none")),
-                    ("width", "256px"),
-                    ("height", "256px"),
-                    ("overflow", "hidden"),
-                    ("z-index", "1"),
-                    ("cursor", "none")
+                    ("background-position", (toString player.spriteX) ++ "px 0px"),
+                    if player.x > -1
+                        then ("left", toString player.x ++ "px")
+                    else ("left", "50%"),
+                    if player.y > -1
+                        then ("top", toString player.y ++ "px")
+                    else ("top", "80%"),
+                    if player.highlightFrames > 0
+                        then ("box-shadow", "inset 0px 0px 60px 10px rgba(255, 255, 255, 0.8)")
+                    else ("box-shadow", "none")
                 ]
-            ] [
-            ],
+            ] [],
             -- ORB
             div [
+                class "orb",
                 style [
-                    ("position", "absolute"),
                     ("left", toString (orb.x % winW) ++ "px"),
                     ("top", toString (orb.y % winH) ++ "px"),
-                    ("margin-left", "-30px"),
-                    ("margin-top", "-30px"),
-                    (if (level > 0) then ("width", "40px") else ("width", "60px")),
-                    (if (level > 0) then ("height", "40px") else ("height", "60px")),
-                    ("line-height", "80px"),
-                    ("text-align", "center"),
-                    ("border", "1px solid #fff"),
-                    ("border-radius", "100px"),
-                    (if (level > 0) then ("background", "#fff") else ("background", "none")),
-                    ("z-index", "10"),
-                    ("box-shadow", "0px 0px 8px 3px #fff, inset 0px 0px 8px 3px #fff"),
-                    ("cursor", "move")
+                    if (level > 0)
+                        then ("width", "40px")
+                    else ("width", "60px"),
+                    if (level > 0)
+                        then ("height", "40px")
+                    else ("height", "60px"),
+                    if (level > 0)
+                        then ("background", "#fff")
+                    else ("background", "none")
                 ],
                 onClick gameAction OrbHit
-            ] [
-            ],
+            ] [],
             -- SCORE
             div [
-                style [
-                    ("position", "absolute"),
-                    ("left", "0"),
-                    ("right", "0"),
-                    ("bottom", "10px"),
-                    ("font", "25px monospace"),
-                    ("text-align", "center"),
-                    ("color", "#fff"),
-                    ("z-index", "0")
-                ]
+                class "score"
             ] [
                 text ( "SCORE: " ++ (toString state.player.score))
             ],
             -- DEBUG
             span [
-                style [
-                    ("color", "#fff")
-                ]
+                class "debug"
             ] [
                 text (toString state)
             ]

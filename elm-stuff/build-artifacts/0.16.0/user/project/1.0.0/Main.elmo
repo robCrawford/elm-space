@@ -17,6 +17,7 @@ Elm.Main.make = function (_elm) {
    $Time = Elm.Time.make(_elm),
    $Window = Elm.Window.make(_elm);
    var _op = {};
+   var css = function (path) {    return A3($Html.node,"link",_U.list([$Html$Attributes.rel("stylesheet"),$Html$Attributes.href(path)]),_U.list([]));};
    var orbTimeline = F2(function (orb,player) {    var incr = player.score / 10 | 0;return _U.update(orb,{x: orb.x + incr,y: orb.y + incr});});
    var playerPos = F2(function (_p0,player) {    var _p1 = _p0;return _U.update(player,{x: _p1._0,y: _p1._1});});
    var playerMD = function (player) {    return _U.update(player,{highlightFrames: 5});};
@@ -31,15 +32,15 @@ Elm.Main.make = function (_elm) {
       var player = state.player;
       var level = player.score / 100 | 0;
       return A2($Html.div,
-      _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "width",_1: A2($Basics._op["++"],$Basics.toString(_p5 - 2),"px")}
-                                              ,{ctor: "_Tuple2",_0: "height",_1: A2($Basics._op["++"],$Basics.toString(_p4 - 2),"px")}
-                                              ,{ctor: "_Tuple2",_0: "background",_1: "#111"}
-                                              ,{ctor: "_Tuple2",_0: "border",_1: "1px solid #66f"}
-                                              ,{ctor: "_Tuple2",_0: "overflow",_1: "hidden"}]))]),
-      _U.list([A2($Html.div,
-              _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "position",_1: "absolute"}
-                                                      ,{ctor: "_Tuple2",_0: "margin-left",_1: "-128px"}
-                                                      ,{ctor: "_Tuple2",_0: "margin-top",_1: "-128px"}
+      _U.list([$Html$Attributes.$class("main")
+              ,$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "width",_1: A2($Basics._op["++"],$Basics.toString(_p5 - 2),"px")}
+                                              ,{ctor: "_Tuple2",_0: "height",_1: A2($Basics._op["++"],$Basics.toString(_p4 - 2),"px")}]))]),
+      _U.list([css("style.css")
+              ,A2($Html.div,
+              _U.list([$Html$Attributes.$class("player")
+                      ,$Html$Attributes.style(_U.list([{ctor: "_Tuple2"
+                                                       ,_0: "background-position"
+                                                       ,_1: A2($Basics._op["++"],$Basics.toString(player.spriteX),"px 0px")}
                                                       ,_U.cmp(player.x,-1) > 0 ? {ctor: "_Tuple2"
                                                                                  ,_0: "left"
                                                                                  ,_1: A2($Basics._op["++"],$Basics.toString(player.x),"px")} : {ctor: "_Tuple2"
@@ -50,62 +51,33 @@ Elm.Main.make = function (_elm) {
                                                                                  ,_1: A2($Basics._op["++"],$Basics.toString(player.y),"px")} : {ctor: "_Tuple2"
                                                                                                                                                ,_0: "top"
                                                                                                                                                ,_1: "80%"}
-                                                      ,{ctor: "_Tuple2"
-                                                       ,_0: "background"
-                                                       ,_1: A2($Basics._op["++"],
-                                                       "url(player.png) no-repeat ",
-                                                       A2($Basics._op["++"],$Basics.toString(player.spriteX),"px 0px"))}
-                                                      ,{ctor: "_Tuple2",_0: "border-radius",_1: "1000px"}
                                                       ,_U.cmp(player.highlightFrames,0) > 0 ? {ctor: "_Tuple2"
                                                                                               ,_0: "box-shadow"
                                                                                               ,_1: "inset 0px 0px 60px 10px rgba(255, 255, 255, 0.8)"} : {ctor: "_Tuple2"
                                                                                                                                                          ,_0: "box-shadow"
-                                                                                                                                                         ,_1: "none"}
-                                                      ,{ctor: "_Tuple2",_0: "width",_1: "256px"}
-                                                      ,{ctor: "_Tuple2",_0: "height",_1: "256px"}
-                                                      ,{ctor: "_Tuple2",_0: "overflow",_1: "hidden"}
-                                                      ,{ctor: "_Tuple2",_0: "z-index",_1: "1"}
-                                                      ,{ctor: "_Tuple2",_0: "cursor",_1: "none"}]))]),
+                                                                                                                                                         ,_1: "none"}]))]),
               _U.list([]))
               ,A2($Html.div,
-              _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "position",_1: "absolute"}
-                                                      ,{ctor: "_Tuple2"
+              _U.list([$Html$Attributes.$class("orb")
+                      ,$Html$Attributes.style(_U.list([{ctor: "_Tuple2"
                                                        ,_0: "left"
                                                        ,_1: A2($Basics._op["++"],$Basics.toString(A2($Basics._op["%"],orb.x,_p5)),"px")}
                                                       ,{ctor: "_Tuple2"
                                                        ,_0: "top"
                                                        ,_1: A2($Basics._op["++"],$Basics.toString(A2($Basics._op["%"],orb.y,_p4)),"px")}
-                                                      ,{ctor: "_Tuple2",_0: "margin-left",_1: "-30px"}
-                                                      ,{ctor: "_Tuple2",_0: "margin-top",_1: "-30px"}
                                                       ,_U.cmp(level,0) > 0 ? {ctor: "_Tuple2",_0: "width",_1: "40px"} : {ctor: "_Tuple2",_0: "width",_1: "60px"}
                                                       ,_U.cmp(level,0) > 0 ? {ctor: "_Tuple2",_0: "height",_1: "40px"} : {ctor: "_Tuple2"
                                                                                                                          ,_0: "height"
                                                                                                                          ,_1: "60px"}
-                                                      ,{ctor: "_Tuple2",_0: "line-height",_1: "80px"}
-                                                      ,{ctor: "_Tuple2",_0: "text-align",_1: "center"}
-                                                      ,{ctor: "_Tuple2",_0: "border",_1: "1px solid #fff"}
-                                                      ,{ctor: "_Tuple2",_0: "border-radius",_1: "100px"}
                                                       ,_U.cmp(level,0) > 0 ? {ctor: "_Tuple2",_0: "background",_1: "#fff"} : {ctor: "_Tuple2"
                                                                                                                              ,_0: "background"
-                                                                                                                             ,_1: "none"}
-                                                      ,{ctor: "_Tuple2",_0: "z-index",_1: "10"}
-                                                      ,{ctor: "_Tuple2",_0: "box-shadow",_1: "0px 0px 8px 3px #fff, inset 0px 0px 8px 3px #fff"}
-                                                      ,{ctor: "_Tuple2",_0: "cursor",_1: "move"}]))
+                                                                                                                             ,_1: "none"}]))
                       ,A2($Html$Events.onClick,gameAction,OrbHit)]),
               _U.list([]))
               ,A2($Html.div,
-              _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "position",_1: "absolute"}
-                                                      ,{ctor: "_Tuple2",_0: "left",_1: "0"}
-                                                      ,{ctor: "_Tuple2",_0: "right",_1: "0"}
-                                                      ,{ctor: "_Tuple2",_0: "bottom",_1: "10px"}
-                                                      ,{ctor: "_Tuple2",_0: "font",_1: "25px monospace"}
-                                                      ,{ctor: "_Tuple2",_0: "text-align",_1: "center"}
-                                                      ,{ctor: "_Tuple2",_0: "color",_1: "#fff"}
-                                                      ,{ctor: "_Tuple2",_0: "z-index",_1: "0"}]))]),
+              _U.list([$Html$Attributes.$class("score")]),
               _U.list([$Html.text(A2($Basics._op["++"],"SCORE: ",$Basics.toString(state.player.score)))]))
-              ,A2($Html.span,
-              _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "color",_1: "#fff"}]))]),
-              _U.list([$Html.text($Basics.toString(state))]))]));
+              ,A2($Html.span,_U.list([$Html$Attributes.$class("debug")]),_U.list([$Html.text($Basics.toString(state))]))]));
    });
    var Frame = function (a) {    return {ctor: "Frame",_0: a};};
    var MouseButton = function (a) {    return {ctor: "MouseButton",_0: a};};
@@ -161,5 +133,6 @@ Elm.Main.make = function (_elm) {
                              ,playerTimeline: playerTimeline
                              ,orbTimeline: orbTimeline
                              ,main: main
+                             ,css: css
                              ,view: view};
 };
