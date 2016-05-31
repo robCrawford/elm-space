@@ -8249,163 +8249,6 @@ Elm.Json.Decode.make = function (_elm) {
                                     ,andThen: andThen
                                     ,value: value
                                     ,customDecoder: customDecoder};
-};Elm.Set = Elm.Set || {};
-Elm.Set.make = function (_elm) {
-   "use strict";
-   _elm.Set = _elm.Set || {};
-   if (_elm.Set.values) return _elm.Set.values;
-   var _U = Elm.Native.Utils.make(_elm),$Basics = Elm.Basics.make(_elm),$Dict = Elm.Dict.make(_elm),$List = Elm.List.make(_elm);
-   var _op = {};
-   var foldr = F3(function (f,b,_p0) {    var _p1 = _p0;return A3($Dict.foldr,F3(function (k,_p2,b) {    return A2(f,k,b);}),b,_p1._0);});
-   var foldl = F3(function (f,b,_p3) {    var _p4 = _p3;return A3($Dict.foldl,F3(function (k,_p5,b) {    return A2(f,k,b);}),b,_p4._0);});
-   var toList = function (_p6) {    var _p7 = _p6;return $Dict.keys(_p7._0);};
-   var size = function (_p8) {    var _p9 = _p8;return $Dict.size(_p9._0);};
-   var member = F2(function (k,_p10) {    var _p11 = _p10;return A2($Dict.member,k,_p11._0);});
-   var isEmpty = function (_p12) {    var _p13 = _p12;return $Dict.isEmpty(_p13._0);};
-   var Set_elm_builtin = function (a) {    return {ctor: "Set_elm_builtin",_0: a};};
-   var empty = Set_elm_builtin($Dict.empty);
-   var singleton = function (k) {    return Set_elm_builtin(A2($Dict.singleton,k,{ctor: "_Tuple0"}));};
-   var insert = F2(function (k,_p14) {    var _p15 = _p14;return Set_elm_builtin(A3($Dict.insert,k,{ctor: "_Tuple0"},_p15._0));});
-   var fromList = function (xs) {    return A3($List.foldl,insert,empty,xs);};
-   var map = F2(function (f,s) {    return fromList(A2($List.map,f,toList(s)));});
-   var remove = F2(function (k,_p16) {    var _p17 = _p16;return Set_elm_builtin(A2($Dict.remove,k,_p17._0));});
-   var union = F2(function (_p19,_p18) {    var _p20 = _p19;var _p21 = _p18;return Set_elm_builtin(A2($Dict.union,_p20._0,_p21._0));});
-   var intersect = F2(function (_p23,_p22) {    var _p24 = _p23;var _p25 = _p22;return Set_elm_builtin(A2($Dict.intersect,_p24._0,_p25._0));});
-   var diff = F2(function (_p27,_p26) {    var _p28 = _p27;var _p29 = _p26;return Set_elm_builtin(A2($Dict.diff,_p28._0,_p29._0));});
-   var filter = F2(function (p,_p30) {    var _p31 = _p30;return Set_elm_builtin(A2($Dict.filter,F2(function (k,_p32) {    return p(k);}),_p31._0));});
-   var partition = F2(function (p,_p33) {
-      var _p34 = _p33;
-      var _p35 = A2($Dict.partition,F2(function (k,_p36) {    return p(k);}),_p34._0);
-      var p1 = _p35._0;
-      var p2 = _p35._1;
-      return {ctor: "_Tuple2",_0: Set_elm_builtin(p1),_1: Set_elm_builtin(p2)};
-   });
-   return _elm.Set.values = {_op: _op
-                            ,empty: empty
-                            ,singleton: singleton
-                            ,insert: insert
-                            ,remove: remove
-                            ,isEmpty: isEmpty
-                            ,member: member
-                            ,size: size
-                            ,foldl: foldl
-                            ,foldr: foldr
-                            ,map: map
-                            ,filter: filter
-                            ,partition: partition
-                            ,union: union
-                            ,intersect: intersect
-                            ,diff: diff
-                            ,toList: toList
-                            ,fromList: fromList};
-};Elm.Native.Keyboard = {};
-
-Elm.Native.Keyboard.make = function(localRuntime) {
-	localRuntime.Native = localRuntime.Native || {};
-	localRuntime.Native.Keyboard = localRuntime.Native.Keyboard || {};
-	if (localRuntime.Native.Keyboard.values)
-	{
-		return localRuntime.Native.Keyboard.values;
-	}
-
-	var NS = Elm.Native.Signal.make(localRuntime);
-
-
-	function keyEvent(event)
-	{
-		return {
-			alt: event.altKey,
-			meta: event.metaKey,
-			keyCode: event.keyCode
-		};
-	}
-
-
-	function keyStream(node, eventName, handler)
-	{
-		var stream = NS.input(eventName, { alt: false, meta: false, keyCode: 0 });
-
-		localRuntime.addListener([stream.id], node, eventName, function(e) {
-			localRuntime.notify(stream.id, handler(e));
-		});
-
-		return stream;
-	}
-
-	var downs = keyStream(document, 'keydown', keyEvent);
-	var ups = keyStream(document, 'keyup', keyEvent);
-	var presses = keyStream(document, 'keypress', keyEvent);
-	var blurs = keyStream(window, 'blur', function() { return null; });
-
-
-	return localRuntime.Native.Keyboard.values = {
-		downs: downs,
-		ups: ups,
-		blurs: blurs,
-		presses: presses
-	};
-};
-Elm.Keyboard = Elm.Keyboard || {};
-Elm.Keyboard.make = function (_elm) {
-   "use strict";
-   _elm.Keyboard = _elm.Keyboard || {};
-   if (_elm.Keyboard.values) return _elm.Keyboard.values;
-   var _U = Elm.Native.Utils.make(_elm),
-   $Basics = Elm.Basics.make(_elm),
-   $Char = Elm.Char.make(_elm),
-   $Native$Keyboard = Elm.Native.Keyboard.make(_elm),
-   $Set = Elm.Set.make(_elm),
-   $Signal = Elm.Signal.make(_elm);
-   var _op = {};
-   var presses = A2($Signal.map,function (_) {    return _.keyCode;},$Native$Keyboard.presses);
-   var toXY = F2(function (_p0,keyCodes) {
-      var _p1 = _p0;
-      var is = function (keyCode) {    return A2($Set.member,keyCode,keyCodes) ? 1 : 0;};
-      return {x: is(_p1.right) - is(_p1.left),y: is(_p1.up) - is(_p1.down)};
-   });
-   var Directions = F4(function (a,b,c,d) {    return {up: a,down: b,left: c,right: d};});
-   var dropMap = F2(function (f,signal) {    return $Signal.dropRepeats(A2($Signal.map,f,signal));});
-   var EventInfo = F3(function (a,b,c) {    return {alt: a,meta: b,keyCode: c};});
-   var Blur = {ctor: "Blur"};
-   var Down = function (a) {    return {ctor: "Down",_0: a};};
-   var Up = function (a) {    return {ctor: "Up",_0: a};};
-   var rawEvents = $Signal.mergeMany(_U.list([A2($Signal.map,Up,$Native$Keyboard.ups)
-                                             ,A2($Signal.map,Down,$Native$Keyboard.downs)
-                                             ,A2($Signal.map,$Basics.always(Blur),$Native$Keyboard.blurs)]));
-   var empty = {alt: false,meta: false,keyCodes: $Set.empty};
-   var update = F2(function (event,model) {
-      var _p2 = event;
-      switch (_p2.ctor)
-      {case "Down": var _p3 = _p2._0;
-           return {alt: _p3.alt,meta: _p3.meta,keyCodes: A2($Set.insert,_p3.keyCode,model.keyCodes)};
-         case "Up": var _p4 = _p2._0;
-           return {alt: _p4.alt,meta: _p4.meta,keyCodes: A2($Set.remove,_p4.keyCode,model.keyCodes)};
-         default: return empty;}
-   });
-   var model = A3($Signal.foldp,update,empty,rawEvents);
-   var alt = A2(dropMap,function (_) {    return _.alt;},model);
-   var meta = A2(dropMap,function (_) {    return _.meta;},model);
-   var keysDown = A2(dropMap,function (_) {    return _.keyCodes;},model);
-   var arrows = A2(dropMap,toXY({up: 38,down: 40,left: 37,right: 39}),keysDown);
-   var wasd = A2(dropMap,toXY({up: 87,down: 83,left: 65,right: 68}),keysDown);
-   var isDown = function (keyCode) {    return A2(dropMap,$Set.member(keyCode),keysDown);};
-   var ctrl = isDown(17);
-   var shift = isDown(16);
-   var space = isDown(32);
-   var enter = isDown(13);
-   var Model = F3(function (a,b,c) {    return {alt: a,meta: b,keyCodes: c};});
-   return _elm.Keyboard.values = {_op: _op
-                                 ,arrows: arrows
-                                 ,wasd: wasd
-                                 ,enter: enter
-                                 ,space: space
-                                 ,ctrl: ctrl
-                                 ,shift: shift
-                                 ,alt: alt
-                                 ,meta: meta
-                                 ,isDown: isDown
-                                 ,keysDown: keysDown
-                                 ,presses: presses};
 };Elm.Native = Elm.Native || {};
 Elm.Native.Mouse = {};
 Elm.Native.Mouse.make = function(localRuntime) {
@@ -10626,6 +10469,71 @@ Elm.Html.Attributes.make = function (_elm) {
                                         ,manifest: manifest
                                         ,property: property
                                         ,attribute: attribute};
+};Elm.Html = Elm.Html || {};
+Elm.Html.Events = Elm.Html.Events || {};
+Elm.Html.Events.make = function (_elm) {
+   "use strict";
+   _elm.Html = _elm.Html || {};
+   _elm.Html.Events = _elm.Html.Events || {};
+   if (_elm.Html.Events.values) return _elm.Html.Events.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Json$Decode = Elm.Json.Decode.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $VirtualDom = Elm.VirtualDom.make(_elm);
+   var _op = {};
+   var keyCode = A2($Json$Decode._op[":="],"keyCode",$Json$Decode.$int);
+   var targetChecked = A2($Json$Decode.at,_U.list(["target","checked"]),$Json$Decode.bool);
+   var targetValue = A2($Json$Decode.at,_U.list(["target","value"]),$Json$Decode.string);
+   var defaultOptions = $VirtualDom.defaultOptions;
+   var Options = F2(function (a,b) {    return {stopPropagation: a,preventDefault: b};});
+   var onWithOptions = $VirtualDom.onWithOptions;
+   var on = $VirtualDom.on;
+   var messageOn = F3(function (name,addr,msg) {    return A3(on,name,$Json$Decode.value,function (_p0) {    return A2($Signal.message,addr,msg);});});
+   var onClick = messageOn("click");
+   var onDoubleClick = messageOn("dblclick");
+   var onMouseMove = messageOn("mousemove");
+   var onMouseDown = messageOn("mousedown");
+   var onMouseUp = messageOn("mouseup");
+   var onMouseEnter = messageOn("mouseenter");
+   var onMouseLeave = messageOn("mouseleave");
+   var onMouseOver = messageOn("mouseover");
+   var onMouseOut = messageOn("mouseout");
+   var onBlur = messageOn("blur");
+   var onFocus = messageOn("focus");
+   var onSubmit = messageOn("submit");
+   var onKey = F3(function (name,addr,handler) {    return A3(on,name,keyCode,function (code) {    return A2($Signal.message,addr,handler(code));});});
+   var onKeyUp = onKey("keyup");
+   var onKeyDown = onKey("keydown");
+   var onKeyPress = onKey("keypress");
+   return _elm.Html.Events.values = {_op: _op
+                                    ,onBlur: onBlur
+                                    ,onFocus: onFocus
+                                    ,onSubmit: onSubmit
+                                    ,onKeyUp: onKeyUp
+                                    ,onKeyDown: onKeyDown
+                                    ,onKeyPress: onKeyPress
+                                    ,onClick: onClick
+                                    ,onDoubleClick: onDoubleClick
+                                    ,onMouseMove: onMouseMove
+                                    ,onMouseDown: onMouseDown
+                                    ,onMouseUp: onMouseUp
+                                    ,onMouseEnter: onMouseEnter
+                                    ,onMouseLeave: onMouseLeave
+                                    ,onMouseOver: onMouseOver
+                                    ,onMouseOut: onMouseOut
+                                    ,on: on
+                                    ,onWithOptions: onWithOptions
+                                    ,defaultOptions: defaultOptions
+                                    ,targetValue: targetValue
+                                    ,targetChecked: targetChecked
+                                    ,keyCode: keyCode
+                                    ,Options: Options};
 };Elm.Main = Elm.Main || {};
 Elm.Main.make = function (_elm) {
    "use strict";
@@ -10636,6 +10544,7 @@ Elm.Main.make = function (_elm) {
    $Debug = Elm.Debug.make(_elm),
    $Html = Elm.Html.make(_elm),
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $Html$Events = Elm.Html.Events.make(_elm),
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Mouse = Elm.Mouse.make(_elm),
@@ -10644,79 +10553,122 @@ Elm.Main.make = function (_elm) {
    $Time = Elm.Time.make(_elm),
    $Window = Elm.Window.make(_elm);
    var _op = {};
-   var view = F2(function (_p0,state) {
-      var _p1 = _p0;
+   var css = function (path) {    return A3($Html.node,"link",_U.list([$Html$Attributes.rel("stylesheet"),$Html$Attributes.href(path)]),_U.list([]));};
+   var orbTimeline = F2(function (orb,player) {    var incr = player.score / 10 | 0;return _U.update(orb,{x: orb.x + incr,y: orb.y + incr});});
+   var playerPos = F2(function (_p0,player) {    var _p1 = _p0;return _U.update(player,{x: _p1._0,y: _p1._1});});
+   var playerMD = function (player) {    return _U.update(player,{highlightFrames: 5});};
+   var Noop = {ctor: "Noop"};
+   var gameAction = $Signal.mailbox(Noop);
+   var OrbHit = {ctor: "OrbHit"};
+   var view = F3(function (gameAction,_p2,state) {
+      var _p3 = _p2;
+      var _p5 = _p3._0;
+      var _p4 = _p3._1;
+      var orb = state.orb;
       var player = state.player;
+      var level = player.score / 100 | 0;
       return A2($Html.div,
-      _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "width",_1: A2($Basics._op["++"],$Basics.toString(_p1._0),"px")}
-                                              ,{ctor: "_Tuple2",_0: "height",_1: A2($Basics._op["++"],$Basics.toString(_p1._1),"px")}
-                                              ,{ctor: "_Tuple2",_0: "background",_1: "#111"}]))]),
-      _U.list([A2($Html.div,
-              _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "position",_1: "absolute"}
-                                                      ,{ctor: "_Tuple2",_0: "margin-left",_1: "-128px"}
-                                                      ,{ctor: "_Tuple2",_0: "margin-top",_1: "-128px"}
-                                                      ,{ctor: "_Tuple2",_0: "left",_1: A2($Basics._op["++"],$Basics.toString(player.x),"px")}
-                                                      ,{ctor: "_Tuple2",_0: "top",_1: A2($Basics._op["++"],$Basics.toString(player.y),"px")}
-                                                      ,{ctor: "_Tuple2"
-                                                       ,_0: "background"
-                                                       ,_1: A2($Basics._op["++"],
-                                                       "url(player.png) no-repeat ",
-                                                       A2($Basics._op["++"],$Basics.toString(player.spriteX),"px 0px"))}
-                                                      ,{ctor: "_Tuple2",_0: "width",_1: "256px"}
-                                                      ,{ctor: "_Tuple2",_0: "height",_1: "256px"}
-                                                      ,{ctor: "_Tuple2",_0: "overflow",_1: "hidden"}
-                                                      ,{ctor: "_Tuple2",_0: "cursor",_1: "none"}
-                                                      ,player.visible ? {ctor: "_Tuple2",_0: "display",_1: "block"} : {ctor: "_Tuple2"
-                                                                                                                      ,_0: "display"
-                                                                                                                      ,_1: "none"}]))]),
+      _U.list([$Html$Attributes.$class("main")
+              ,$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "width",_1: A2($Basics._op["++"],$Basics.toString(_p5 - 2),"px")}
+                                              ,{ctor: "_Tuple2",_0: "height",_1: A2($Basics._op["++"],$Basics.toString(_p4 - 2),"px")}]))]),
+      _U.list([css("style.css")
+              ,A2($Html.div,
+              _U.list([$Html$Attributes.$class("player")
+                      ,$Html$Attributes.style(_U.list([{ctor: "_Tuple2"
+                                                       ,_0: "background-position"
+                                                       ,_1: A2($Basics._op["++"],$Basics.toString(player.spriteX),"px 0px")}
+                                                      ,_U.cmp(player.x,-1) > 0 ? {ctor: "_Tuple2"
+                                                                                 ,_0: "left"
+                                                                                 ,_1: A2($Basics._op["++"],$Basics.toString(player.x),"px")} : {ctor: "_Tuple2"
+                                                                                                                                               ,_0: "left"
+                                                                                                                                               ,_1: "50%"}
+                                                      ,_U.cmp(player.y,-1) > 0 ? {ctor: "_Tuple2"
+                                                                                 ,_0: "top"
+                                                                                 ,_1: A2($Basics._op["++"],$Basics.toString(player.y),"px")} : {ctor: "_Tuple2"
+                                                                                                                                               ,_0: "top"
+                                                                                                                                               ,_1: "80%"}
+                                                      ,_U.cmp(player.highlightFrames,0) > 0 ? {ctor: "_Tuple2"
+                                                                                              ,_0: "box-shadow"
+                                                                                              ,_1: "inset 0px 0px 60px 10px rgba(255, 255, 255, 0.8)"} : {ctor: "_Tuple2"
+                                                                                                                                                         ,_0: "box-shadow"
+                                                                                                                                                         ,_1: "none"}]))]),
               _U.list([]))
-              ,A2($Html.span,
-              _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "color",_1: "#fff"}]))]),
-              _U.list([$Html.text($Basics.toString(state))]))]));
+              ,A2($Html.div,
+              _U.list([$Html$Attributes.$class("orb")
+                      ,$Html$Attributes.style(_U.list([{ctor: "_Tuple2"
+                                                       ,_0: "left"
+                                                       ,_1: A2($Basics._op["++"],$Basics.toString(A2($Basics._op["%"],orb.x,_p5)),"px")}
+                                                      ,{ctor: "_Tuple2"
+                                                       ,_0: "top"
+                                                       ,_1: A2($Basics._op["++"],$Basics.toString(A2($Basics._op["%"],orb.y,_p4)),"px")}
+                                                      ,_U.cmp(level,0) > 0 ? {ctor: "_Tuple2",_0: "width",_1: "40px"} : {ctor: "_Tuple2",_0: "width",_1: "60px"}
+                                                      ,_U.cmp(level,0) > 0 ? {ctor: "_Tuple2",_0: "height",_1: "40px"} : {ctor: "_Tuple2"
+                                                                                                                         ,_0: "height"
+                                                                                                                         ,_1: "60px"}
+                                                      ,_U.cmp(level,0) > 0 ? {ctor: "_Tuple2",_0: "background",_1: "#fff"} : {ctor: "_Tuple2"
+                                                                                                                             ,_0: "background"
+                                                                                                                             ,_1: "none"}]))
+                      ,A2($Html$Events.onClick,gameAction,OrbHit)]),
+              _U.list([]))
+              ,A2($Html.div,
+              _U.list([$Html$Attributes.$class("score")]),
+              _U.list([$Html.text(A2($Basics._op["++"],"SCORE: ",$Basics.toString(state.player.score)))]))
+              ,A2($Html.span,_U.list([$Html$Attributes.$class("debug")]),_U.list([$Html.text($Basics.toString(state))]))]));
    });
-   var playerPos = F2(function (_p2,player) {    var _p3 = _p2;return _U.update(player,{x: _p3._0,y: _p3._1,visible: true});});
    var Frame = function (a) {    return {ctor: "Frame",_0: a};};
    var MouseButton = function (a) {    return {ctor: "MouseButton",_0: a};};
    var MouseMove = function (a) {    return {ctor: "MouseMove",_0: a};};
-   var uiEvents = $Signal.mergeMany(_U.list([A2($Signal.map,MouseMove,$Mouse.position)
-                                            ,A2($Signal.map,MouseButton,$Mouse.isDown)
-                                            ,A2($Signal.map,Frame,$Time.fps(25))]));
-   var Player = F4(function (a,b,c,d) {    return {visible: a,x: b,y: c,spriteX: d};});
-   var State = function (a) {    return {player: a};};
+   var envAction = $Signal.mergeMany(_U.list([A2($Signal.map,MouseMove,$Mouse.position)
+                                             ,A2($Signal.map,MouseButton,$Mouse.isDown)
+                                             ,A2($Signal.map,Frame,$Time.fps(25))]));
+   var Orb = F2(function (a,b) {    return {x: a,y: b};});
+   var Player = F6(function (a,b,c,d,e,f) {    return {score: a,x: b,y: c,spriteX: d,isSpinning: e,highlightFrames: f};});
+   var State = F2(function (a,b) {    return {player: a,orb: b};});
    var spriteXFrame = 256;
-   var spriteXStart = -12544;
-   var initialState = {player: {visible: false,x: 50,y: 50,spriteX: spriteXStart}};
-   var playerSpin = F2(function (isDown,player) {
-      return _U.update(player,{spriteX: _U.eq(player.spriteX,spriteXStart) && _U.eq(isDown,true) ? spriteXStart + spriteXFrame : player.spriteX});
-   });
-   var timeline = F2(function (delta,player) {
+   var spriteWidth = 12800;
+   var spriteXStart = spriteXFrame - spriteWidth;
+   var initialState = {player: {score: 0,x: -100,y: -100,spriteX: spriteXStart,isSpinning: false,highlightFrames: 0},orb: {x: 200,y: 200}};
+   var playerSpin = function (player) {    return _U.update(player,{spriteX: spriteXStart + spriteXFrame,isSpinning: true,score: player.score + 10});};
+   var playerTimeline = function (player) {
       return _U.update(player,
-      {spriteX: _U.eq(player.spriteX,0) ? spriteXStart : _U.cmp(player.spriteX,spriteXStart) > 0 ? player.spriteX + spriteXFrame : player.spriteX});
+      {spriteX: _U.eq(player.spriteX,0) ? spriteXStart : _U.cmp(player.spriteX,spriteXStart) > 0 ? player.spriteX + spriteXFrame : player.spriteX
+      ,highlightFrames: _U.cmp(player.highlightFrames,0) > 0 ? player.highlightFrames - 1 : 0
+      ,isSpinning: !_U.eq(player.spriteX,spriteXStart) ? true : false});
+   };
+   var update = F2(function (action,state) {
+      var _p6 = action;
+      switch (_p6.ctor)
+      {case "MouseMove": return _U.update(state,{player: A2(playerPos,{ctor: "_Tuple2",_0: _p6._0._0,_1: _p6._0._1},state.player)});
+         case "MouseButton": return _U.update(state,{player: playerMD(state.player)});
+         case "Frame": return _U.update(state,{player: playerTimeline(state.player),orb: A2(orbTimeline,state.orb,state.player)});
+         case "OrbHit": return _U.update(state,{player: _U.eq(state.player.isSpinning,false) ? playerSpin(state.player) : state.player});
+         default: return state;}
    });
-   var update = F2(function (uiEvents,state) {
-      var _p4 = uiEvents;
-      switch (_p4.ctor)
-      {case "MouseMove": return _U.update(state,{player: A2(playerPos,{ctor: "_Tuple2",_0: _p4._0._0,_1: _p4._0._1},state.player)});
-         case "MouseButton": return _U.update(state,{player: A2(playerSpin,_p4._0,state.player)});
-         default: return _U.update(state,{player: A2(timeline,_p4._0,state.player)});}
-   });
-   var model = A3($Signal.foldp,update,initialState,uiEvents);
-   var main = A3($Signal.map2,view,$Window.dimensions,model);
+   var model = A3($Signal.foldp,update,initialState,A2($Signal.merge,envAction,gameAction.signal));
+   var main = A3($Signal.map2,view(gameAction.address),$Window.dimensions,model);
    return _elm.Main.values = {_op: _op
-                             ,spriteXStart: spriteXStart
+                             ,spriteWidth: spriteWidth
                              ,spriteXFrame: spriteXFrame
+                             ,spriteXStart: spriteXStart
                              ,State: State
                              ,Player: Player
+                             ,Orb: Orb
                              ,initialState: initialState
                              ,model: model
                              ,MouseMove: MouseMove
                              ,MouseButton: MouseButton
                              ,Frame: Frame
-                             ,uiEvents: uiEvents
+                             ,OrbHit: OrbHit
+                             ,Noop: Noop
+                             ,envAction: envAction
+                             ,gameAction: gameAction
                              ,update: update
+                             ,playerMD: playerMD
                              ,playerPos: playerPos
                              ,playerSpin: playerSpin
-                             ,timeline: timeline
-                             ,view: view
-                             ,main: main};
+                             ,playerTimeline: playerTimeline
+                             ,orbTimeline: orbTimeline
+                             ,main: main
+                             ,css: css
+                             ,view: view};
 };</script></head><body><script type="text/javascript">Elm.fullscreen(Elm.Main)</script></body></html>
